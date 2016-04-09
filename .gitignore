@@ -1,6 +1,1 @@
-*.jpg
-plotMatrix.txt
-/build_out
-/export_mac_out
-/run_out
-.build-tools.cson
+img/
