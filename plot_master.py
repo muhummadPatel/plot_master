@@ -1,38 +1,58 @@
 import serial
 import time
 import sys
+from plot_job import PlotJob
 
-ser = serial.Serial()
-try:
-    ser.port = "/dev/tty.usbmodem1451"
-    ser.baudrate = 9600
-    ser.parity = serial.PARITY_NONE
-    ser.bytesize = serial.EIGHTBITS
-    ser.open()
-    if not ser.is_open:
-        sys.exit("Could not open serial connection")
+# TODO: show the user the list of available ports (using pyserial) and let them
+# choose which to connect to
 
+def plot(lines):
+    ser = serial.Serial()
+    try:
+        ser.port = "/dev/tty.usbmodem1451"
+        ser.baudrate = 9600
+        ser.parity = serial.PARITY_NONE
+        ser.bytesize = serial.EIGHTBITS
+        ser.timeout = 10
+        ser.open()
+        if not ser.is_open:
+            sys.exit("Could not open serial connection")
 
-    print "waiting for device to initialise..."
-    time.sleep(5)
-
-    ser.write("help\n")
-    print "listening... "
-    while True:
-        ser.write("line 0 0 10 10\n")
-        time.sleep(5);
-        ser.write("line 10 10 0 0\n")
+        print "waiting for device to initialise..."
         time.sleep(5)
 
-        # line = ser.readline()
-        # while line != "":
-        #     print line,
-        #     line = ser.readline()
-except KeyboardInterrupt:
-    print "Error: KeyboardInterrupt"
-except serial.SerialException:
-    print "Error: SerialException"
-finally:
-    if ser.is_open:
-        ser.close()
-        print "connection closed"
+        print "listening... "
+        for line in lines:
+            code = "line " + " ".join([str(i) for i in line]) + "\n"
+            ser.write(code)
+            print code,
+
+            response = ser.readline()
+            retries = 1;
+            # print "X> " + response
+            while response.find("x") < 0:
+                response = ser.readline()
+                retries += 1
+
+                if retries > 5:
+                    print "no response, assume ok\n",
+                    break
+                # print "X> " + response
+        ser.write("origin")
+        print "DONE"
+    except KeyboardInterrupt:
+        print "Error: KeyboardInterrupt"
+    except serial.SerialException:
+        print "Error: SerialException"
+    finally:
+        if ser.is_open:
+            ser.close()
+            print "connection closed"
+
+
+def main():
+    job = PlotJob(52, 52, 3, "img/lenna.png")
+    plot(job.lines)
+
+if __name__ == '__main__':
+    main()
