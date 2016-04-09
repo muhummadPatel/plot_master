@@ -51,7 +51,7 @@ def plot(lines):
 
 
 def main():
-    job = PlotJob(52, 52, 3, "img/doge.jpg")
+    job = PlotJob(52, 52, 3, "img/lenna.png")
     plot(job.lines)
 
 if __name__ == '__main__':
