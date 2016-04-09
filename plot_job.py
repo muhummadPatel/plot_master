@@ -7,6 +7,7 @@ class PlotJob:
         self.plot_width = plot_width
         self.plot_height = plot_height
         self.shades = shades
+        self.lines = []
 
         original_img = self.__load_image(filename)
         prepared_img = self.__prepare_image(original_img)
@@ -39,12 +40,16 @@ class PlotJob:
         im2 = palette[image]  # Applying palette on image
         im2 = cv2.convertScaleAbs(im2) # Converting image back to uint8
 
+        # cv2.imshow("im", im2)
+        # cv2.waitKey(0)
+
         shade_values = np.unique(im2) # get sorted shade values
         # print shade_values
         # replace the shade vlaues with the shade index
         for i in range(self.shades):
-            im2[im2==shade_values[i]] = i
+            im2[im2==shade_values[i]] = self.shades - (i + 1)
 
+        # print im2
         # im2.fill(255)
         return im2
         # cv2.imshow('im2', im2)
@@ -53,9 +58,8 @@ class PlotJob:
         # cv2.destroyAllWindows()
 
     def __get_sequences(self, val, arr):
-    	lines = []
-    	count = 0
-    	start = 0
+    	sequences = []
+        start = count = 0
     	for i in range(len(arr)):
     		if arr[i] >= val:
     			if count == 0:
@@ -63,29 +67,30 @@ class PlotJob:
     			count += 1
     		else:
     			if count != 0:
-    				lines.append((start, count))
+    				sequences.append((start, count))
     			count = 0
 
         if arr[-1] >= val:
-        	lines.append((start, count))
+        	sequences.append((start, count))
 
-    	return lines
+    	return sequences
 
     def __generate_lines(self, img):
-        print img[0]
-
         width = img.shape[1]
         height = img.shape[0]
 
         # horizontal lines (shade 1)
         h_lines = []
         for row in range(height):
-            seq = self.__get_sequences(1, img[row]) # TODO: change 2 to 1
-            h_lines.extend( [(row, i[0], row, i[0] + i[1]) for i in seq] )
+            seq = self.__get_sequences(1, img[row])
+            row_lines = [(i[0], row, i[0] + i[1], row) for i in seq]
+            h_lines.extend(row_lines)
+        self.lines.extend(h_lines)
 
-        print seq
-        print h_lines
-
-
-
-pj = PlotJob(52, 52, 5, "img/lenna.png")
+        # vertical lines (shade 2)
+        v_lines = []
+        for col in range(width):
+            seq = self.__get_sequences(2, img[:,col])
+            col_lines = [(col, i[0], col, i[0] + i[1]) for i in seq]
+            v_lines.extend(col_lines)
+        self.lines.extend(v_lines)
