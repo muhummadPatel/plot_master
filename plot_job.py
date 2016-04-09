@@ -16,7 +16,10 @@ class PlotJob:
     def __load_image(self, filename):
         return cv2.imread(filename)
 
-    def __prepare_image(self, image):
+    def __prepare_image(self, img):
+        # convert to grayscale
+        image = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+
         # resize to fit plottable area
         image_width = image.shape[1]
         image_height = image.shape[0]
@@ -37,11 +40,8 @@ class PlotJob:
         im2 = palette[image]  # Applying palette on image
         im2 = cv2.convertScaleAbs(im2) # Converting image back to uint8
 
-        # convert to grayscale
-        im2 = cv2.cvtColor(im2, cv2.COLOR_BGR2GRAY)
-
-        cv2.imshow("im", im2)
-        cv2.waitKey(0)
+        # cv2.imshow("im", im2)
+        # cv2.waitKey(0)
 
         shade_values = np.unique(im2) # get sorted shade values
         # print shade_values
