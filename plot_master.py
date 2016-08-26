@@ -1,3 +1,5 @@
+import cv2
+import numpy as np
 import serial
 import sys
 import time
@@ -6,6 +8,23 @@ from plot_job import PlotJob
 
 # TODO: show the user the list of available ports (using pyserial) and let them
 # choose which to connect to
+
+
+def plot_preview(lines):
+    cell_width = 5
+    line_colour = (0, 0, 0)
+    line_thickness = 1
+
+    # TODO: Don't hardcode the plot dimensions (130x130).
+    img = np.full((130 * cell_width, 130 * cell_width, 3), 255, dtype=np.uint8)
+
+    for line in lines:
+        start = (line[0] * cell_width, line[1] * cell_width)
+        end = (line[2] * cell_width, line[3] * cell_width)
+
+        cv2.line(img, start, end, line_colour, line_thickness)
+
+    cv2.imshow('Preview', img)
 
 
 def plot(lines):
@@ -55,7 +74,11 @@ def plot(lines):
 
 
 def main():
-    job = PlotJob(130, 130, 3, "img/me.jpg")
+    # NOTE: even though it says 4 shades, the forward diagonal shade hasn't been tested with the hardware yet
+    job = PlotJob(130, 130, 4, "img/me.jpg")
+    plot_preview(job.lines)
+    cv2.waitKey(0)
+
     plot(job.lines)
 
 if __name__ == '__main__':
