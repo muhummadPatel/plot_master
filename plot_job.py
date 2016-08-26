@@ -80,7 +80,7 @@ class PlotJob:
         width = img.shape[1]
         height = img.shape[0]
 
-        # horizontal lines (shade 1)
+        # horizontal lines - (shade 1)
         h_lines = []
         for row in range(height):
             seq = self.__get_sequences(1, img[row])
@@ -93,7 +93,7 @@ class PlotJob:
             h_lines.extend(row_lines)
         self.lines.extend(h_lines)
 
-        # vertical lines (shade 2)
+        # vertical lines | (shade 2)
         v_lines = []
         for col in range(width):
             seq = self.__get_sequences(2, img[:, col])
@@ -105,3 +105,31 @@ class PlotJob:
 
             v_lines.extend(col_lines)
         self.lines.extend(v_lines)
+
+        # forward diagonal lines / (shade 3)
+        # NOTE: Diagonal shading has not yet been tested with the hardware!!!
+        forward_d_lines = []
+        forward_diags = [img[::-1, :].diagonal(i).tolist() for i in range(-height+1, width)]
+        for diag in range(len(forward_diags)):
+            seq = self.__get_sequences(3, forward_diags[diag])
+
+            diag_lines = []
+            if diag % 2 == 0:
+                for i in seq:
+                    if diag < height:
+                        line = (i[0], diag - i[0], i[0] + i[1], diag - (i[0] + i[1]))
+                    else:
+                        offset = diag - height
+                        line = (offset + i[0], height - i[0], offset + (i[0] + i[1]), height - (i[0] + i[1]))
+                    diag_lines.append(line)
+            else:
+                for i in seq[::-1]:
+                    if diag < height:
+                        line = (i[0] + i[1], diag - (i[0] + i[1]), i[0], diag - i[0])
+                    else:
+                        offset = diag - height
+                        line = (offset + (i[0] + i[1]), height - (i[0] + i[1]), offset + i[0], height - i[0])
+                    diag_lines.append(line)
+
+            forward_d_lines.extend(diag_lines)
+        self.lines.extend(forward_d_lines)
