@@ -12,7 +12,7 @@ from plot_job import PlotJob
 
 def plot_preview(lines):
     cell_width = 5
-    line_colour = (0, 0, 0)
+    line_colour = (255, 0, 0)
     line_thickness = 1
 
     # TODO: Don't hardcode the plot dimensions (130x130).
