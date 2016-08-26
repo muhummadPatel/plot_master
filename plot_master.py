@@ -74,8 +74,8 @@ def plot(lines):
 
 
 def main():
-    # NOTE: even though it says 4 shades, the forward diagonal shade hasn't been tested with the hardware yet
-    job = PlotJob(130, 130, 4, "img/me.jpg")
+    # NOTE: even though it says 5 shades, the diagonal shades haven't been tested with the hardware yet
+    job = PlotJob(130, 130, 5, "img/me.jpg")
     plot_preview(job.lines)
     cv2.waitKey(0)
 

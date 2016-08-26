@@ -133,3 +133,33 @@ class PlotJob:
 
             forward_d_lines.extend(diag_lines)
         self.lines.extend(forward_d_lines)
+
+        # backward diagonal lines \ (shade 4)
+        # NOTE: Diagonal shading has not yet been tested with the hardware!!!
+        backward_d_lines = []
+        backward_diags = [img.diagonal(i).tolist()[::-1] for i in range(width - 1, -height, -1)]
+        for diag in range(len(backward_diags)):
+            seq = self.__get_sequences(4, backward_diags[diag])
+
+            diag_lines = []
+            if diag % 2 == 0:
+                for i in seq:
+                    if diag < height:
+                        line = (width - i[0], diag - i[0], width - (i[0] + i[1]), diag - (i[0] + i[1]))
+                    else:
+                        offset = diag - height
+                        line = (width - offset - i[0], height - i[0],
+                                width - offset - (i[0] + i[1]), height - (i[0] + i[1]))
+                    diag_lines.append(line)
+            else:
+                for i in seq[::-1]:
+                    if diag < height:
+                        line = (width - (i[0] + i[1]), diag - (i[0] + i[1]), width - i[0], diag - i[0])
+                    else:
+                        offset = diag - height
+                        line = (width - offset - (i[0] + i[1]), height - (i[0] + i[1]),
+                                width - offset - i[0], height - i[0])
+                    diag_lines.append(line)
+
+            backward_d_lines.extend(diag_lines)
+        self.lines.extend(backward_d_lines)
