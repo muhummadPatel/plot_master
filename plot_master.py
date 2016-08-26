@@ -1,6 +1,7 @@
 import serial
-import time
 import sys
+import time
+
 from plot_job import PlotJob
 
 # TODO: show the user the list of available ports (using pyserial) and let them
