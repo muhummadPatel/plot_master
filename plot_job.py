@@ -119,16 +119,18 @@ class PlotJob:
                     if diag < height:
                         line = (i[0], diag - i[0], i[0] + i[1], diag - (i[0] + i[1]))
                     else:
-                        offset = diag - height
-                        line = (offset + i[0], height - i[0], offset + (i[0] + i[1]), height - (i[0] + i[1]))
+                        offset = diag - (height - 1)
+                        line = (offset + i[0], (height - 1) - i[0],
+                                offset + (i[0] + i[1]), (height - 1) - (i[0] + i[1]))
                     diag_lines.append(line)
             else:
                 for i in seq[::-1]:
-                    if diag < height:
+                    if diag < height-1:
                         line = (i[0] + i[1], diag - (i[0] + i[1]), i[0], diag - i[0])
                     else:
-                        offset = diag - height
-                        line = (offset + (i[0] + i[1]), height - (i[0] + i[1]), offset + i[0], height - i[0])
+                        offset = diag - (height - 1)
+                        line = (offset + (i[0] + i[1]), (height - 1) - (i[0] + i[1]),
+                                offset + i[0], (height - 1) - i[0])
                     diag_lines.append(line)
 
             forward_d_lines.extend(diag_lines)
@@ -147,18 +149,18 @@ class PlotJob:
                     if diag < height:
                         line = (width - i[0], diag - i[0], width - (i[0] + i[1]), diag - (i[0] + i[1]))
                     else:
-                        offset = diag - height
-                        line = (width - offset - i[0], height - i[0],
-                                width - offset - (i[0] + i[1]), height - (i[0] + i[1]))
+                        offset = diag - (height - 1)
+                        line = (width - offset - i[0], (height - 1) - i[0],
+                                width - offset - (i[0] + i[1]), (height - 1) - (i[0] + i[1]))
                     diag_lines.append(line)
             else:
                 for i in seq[::-1]:
                     if diag < height:
                         line = (width - (i[0] + i[1]), diag - (i[0] + i[1]), width - i[0], diag - i[0])
                     else:
-                        offset = diag - height
-                        line = (width - offset - (i[0] + i[1]), height - (i[0] + i[1]),
-                                width - offset - i[0], height - i[0])
+                        offset = diag - (height - 1)
+                        line = (width - offset - (i[0] + i[1]), (height - 1) - (i[0] + i[1]),
+                                width - offset - i[0], (height - 1) - i[0])
                     diag_lines.append(line)
 
             backward_d_lines.extend(diag_lines)
