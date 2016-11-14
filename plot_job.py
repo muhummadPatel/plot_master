@@ -107,7 +107,6 @@ class PlotJob:
         self.lines.extend(v_lines)
 
         # forward diagonal lines / (shade 3)
-        # NOTE: Diagonal shading has not yet been tested with the hardware!!!
         forward_d_lines = []
         forward_diags = [img[::-1, :].diagonal(i).tolist() for i in range(-height+1, width)]
         for diag in range(len(forward_diags)):
@@ -137,7 +136,6 @@ class PlotJob:
         self.lines.extend(forward_d_lines)
 
         # backward diagonal lines \ (shade 4)
-        # NOTE: Diagonal shading has not yet been tested with the hardware!!!
         backward_d_lines = []
         backward_diags = [img.diagonal(i).tolist()[::-1] for i in range(width - 1, -height, -1)]
         for diag in range(len(backward_diags)):
